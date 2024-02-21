@@ -22,22 +22,9 @@
                             @method('PATCH')
                             <div class="flex flex-col gap-4">
                                 <div>
-                                    <x-input-label for="name" :value="__('Name')" />
+                                    <x-input-label for="name" :value="__('Activity')" />
                                     <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" value="{{$activity->name}}" required autofocus />
                                     <x-input-error :messages="$errors->get('name')" class="mt-2" />
-                                </div>
-                                <div>
-                                    <x-input-label for="remarks" :value="__('Remarks')" />
-                                    <x-text-area id="remarks" class="block mt-1 w-full" type="text" name="remarks" value="{{$activity->remarks}}" required />
-                                    <x-input-error :messages="$errors->get('remarks')" class="mt-2" />
-                                </div>
-                                <div>
-                                    <x-input-label for="status" :value="__('Status')" />
-                                    <select id="status" name="status" class="block mt-1 w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm">
-                                        <option value="pending">Pending</option>
-                                        <option value="approved">Approved</option>
-                                        <option value="rejected">Rejected</option>
-                                    </select>
                                 </div>
 
                                 <div class="flex flex-col items-center gap-4">

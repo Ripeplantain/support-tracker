@@ -15,7 +15,6 @@ class ActivityController extends Controller
     {
         try {
             $activities = Activities::with('user', 'assignedTo')->orderBy('created_at', 'desc')->paginate(10);
-
             return view('activities.index', ['activities' => $activities]);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to retrieve activities.');
@@ -24,7 +23,7 @@ class ActivityController extends Controller
 
     public function create()
     {
-        $users = User::all()->exclude(auth()->user());
+        $users = User::all()->except(auth()->user()->id);
 
         return view('activities.create', ['users' => $users]);
     }
@@ -37,14 +36,17 @@ class ActivityController extends Controller
                 'assigned_to' => 'required|exists:users,id'
             ]);
 
-            $validated_data['user_id'] = auth()->user()->id;
-
-            Activities::create($validated_data);
+            $activity = new Activities();
+            $activity->name = $validated_data['name'];
+            $activity->assigned_to = $validated_data['assigned_to'];
+            $activity->user_id = auth()->user()->id;
+            $activity->save();
 
             return redirect()->route('activities.index')->with('success', 'Activity created successfully.');
         } catch (ValidationException $e) {
             return redirect()->back()->withErrors($e->validator->errors());
         } catch (\Exception $e) {
+            dd($e->getMessage());
             return redirect()->back()->with('error', 'Failed to create activity.');
         }
     }
@@ -65,7 +67,8 @@ class ActivityController extends Controller
     {
         try {
             $activity = Activities::findOrFail($id);
-            return view('activities.edit', compact('activity'));
+            $users = User::all()->except(auth()->user()->id);
+            return view('activities.edit', ['activity' => $activity, 'users' => $users]);
         } catch (ModelNotFoundException $e) {
             return redirect()->route('activities.index')->with('error', 'Activity not found.');
         } catch (\Exception $e) {

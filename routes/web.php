@@ -41,9 +41,9 @@ Route::middleware('auth')->group(function () {
     // Activity Updates
     Route::get('/activities/{id}/updates/create', [ActivityUpdateController::class, 'create'])->name('activity_updates.create');
     Route::post('/activities/{id}/updates', [ActivityUpdateController::class, 'store'])->name('activity_updates.store');
-    Route::get('/activities/{id}/updates/{update}/edit', [ActivityUpdateController::class, 'edit'])->name('activity_updates.edit');
-    Route::patch('/activities/{id}/updates/{update}', [ActivityUpdateController::class, 'update'])->name('activity_updates.update');
-    Route::delete('/activities/{id}/updates/{update}', [ActivityUpdateController::class, 'destroy'])->name('activity_updates.destroy');
+    // Route::get('/activities/{id}/updates/{update}/edit', [ActivityUpdateController::class, 'edit'])->name('activity_updates.edit');
+    // Route::patch('/activities/{id}/updates/{update}', [ActivityUpdateController::class, 'update'])->name('activity_updates.update');
+    // Route::delete('/activities/{id}/updates/{update}', [ActivityUpdateController::class, 'destroy'])->name('activity_updates.destroy');
 });
 
 require __DIR__.'/auth.php';

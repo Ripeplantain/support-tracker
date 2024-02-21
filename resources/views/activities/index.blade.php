@@ -34,17 +34,14 @@
                                         <th scope="col" class="px-6 py-3">
                                             Activities
                                         </th>
-                                        {{-- <th scope="col" class="px-6 py-3">
-                                            Remarks
-                                        </th> --}}
-                                        {{-- <th scope="col" class="px-6 py-3">
-                                            Status
-                                        </th> --}}
                                         <th scope="col" class="px-6 py-3">
                                             Date
                                         </th>
                                         <th scope="col" class="px-6 py-3">
                                             Status Change
+                                        </th>
+                                        <th scope="col" class="px-6 py-3">
+                                            Assigned to
                                         </th>
                                         <th scope="col" class="px-6 py-3">
                                             <span class="sr-only">Edit</span>
@@ -57,17 +54,26 @@
                                             <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                 {{$activity->name}}
                                             </th>
-                                            {{-- <td class="px-6 py-4">
-                                                {{$activity->remarks ?? 'No remarks'}}
-                                            </td> --}}
-                                            {{-- <td class="px-6 py-4">
-                                                {{$activity->status}}
-                                            </td> --}}
                                             <td class="px-6 py-4">
                                                 {{$activity->created_at->format('M d, Y')}}
                                             </td>
-                                            <td class="px-6 py-4 text-right">
-                                                <a href="{{route('activities.edit', ['id' => $activity->id])}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Update</a>
+                                            <td class="px-6 py-4">
+                                                @if (!$activity->status_changed)
+                                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-700 dark:text-green-100">
+                                                        pending
+                                                    </span>
+                                                @else
+                                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-700 dark:text-blue-100">
+                                                        changed
+                                                    </span>
+                                                @endif
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                {{$activity->assignedTo->name}}
+                                            </td>
+                                            <td class="px-6 py-4 text-right ">
+                                                <a href="{{route('activities.edit', ['id' => $activity->id])}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+                                                <a href="{{route('activity_updates.create', ['id' => $activity->id])}}" class="font-medium text-green-600 dark:text-green-500 hover:underline ps-4">Update Status</a>
                                             </td>
                                         </tr>
                                     @endforeach
