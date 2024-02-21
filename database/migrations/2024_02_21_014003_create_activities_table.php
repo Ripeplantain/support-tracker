@@ -14,11 +14,12 @@ return new class extends Migration
         Schema::create('activities', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('status', ['pending', 'approved', 'rejected']);
-            $table->text('remarks')->nullable();
+            $table->boolean('status_changed')->default(false);
+            $table->unsignedBigInteger('assigned_to');
             $table->unsignedBigInteger('user_id');
             $table->timestamps();
 
+            $table->foreign('assigned_to')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }

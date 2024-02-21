@@ -21,6 +21,11 @@ class Activities extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function assignedTo()
+    {
+        return $this->belongsTo(User::class, 'assigned_to');
+    }
+
     public function activityUpdates()
     {
         return $this->hasMany(ActivityUpdates::class);

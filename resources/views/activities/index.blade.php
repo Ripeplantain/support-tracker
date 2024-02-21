@@ -34,14 +34,17 @@
                                         <th scope="col" class="px-6 py-3">
                                             Activities
                                         </th>
-                                        <th scope="col" class="px-6 py-3">
+                                        {{-- <th scope="col" class="px-6 py-3">
                                             Remarks
-                                        </th>
-                                        <th scope="col" class="px-6 py-3">
+                                        </th> --}}
+                                        {{-- <th scope="col" class="px-6 py-3">
                                             Status
-                                        </th>
+                                        </th> --}}
                                         <th scope="col" class="px-6 py-3">
                                             Date
+                                        </th>
+                                        <th scope="col" class="px-6 py-3">
+                                            Status Change
                                         </th>
                                         <th scope="col" class="px-6 py-3">
                                             <span class="sr-only">Edit</span>
@@ -54,17 +57,17 @@
                                             <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                 {{$activity->name}}
                                             </th>
-                                            <td class="px-6 py-4">
+                                            {{-- <td class="px-6 py-4">
                                                 {{$activity->remarks ?? 'No remarks'}}
-                                            </td>
-                                            <td class="px-6 py-4">
+                                            </td> --}}
+                                            {{-- <td class="px-6 py-4">
                                                 {{$activity->status}}
-                                            </td>
+                                            </td> --}}
                                             <td class="px-6 py-4">
                                                 {{$activity->created_at->format('M d, Y')}}
                                             </td>
                                             <td class="px-6 py-4 text-right">
-                                                <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+                                                <a href="{{route('activities.edit', ['id' => $activity->id])}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Update</a>
                                             </td>
                                         </tr>
                                     @endforeach

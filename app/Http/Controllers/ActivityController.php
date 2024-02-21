@@ -2,38 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Activities;
+use App\Models\User;
 use Illuminate\Http\Request;
-use App\Services\ActivityService;
-use Illuminate\Pagination\Paginator;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ActivityController extends Controller
 {
 
-    protected $activityService;
-
-    public function __construct(ActivityService $activityService)
-    {
-        $this->activityService = $activityService;
-    }
-
     public function index()
     {
         try {
-            $activities = $this->activityService->get_user_activities(auth()->user());
-
-            // paginate activities
-            $perPage = 10;
-            $page = Paginator::resolveCurrentPage('page');
-
-            $activities = new Paginator(
-                $activities->forPage($page, $perPage),
-                $activities->count(),
-                $perPage,
-                [$page],
-                ['path' => Paginator::resolveCurrentPath()]
-            );
+            $activities = Activities::with('user', 'assignedTo')->orderBy('created_at', 'desc')->paginate(10);
 
             return view('activities.index', ['activities' => $activities]);
         } catch (\Exception $e) {
@@ -43,7 +24,9 @@ class ActivityController extends Controller
 
     public function create()
     {
-        return view('activities.create');
+        $users = User::all()->exclude(auth()->user());
+
+        return view('activities.create', ['users' => $users]);
     }
 
     public function store(Request $request)
@@ -51,10 +34,12 @@ class ActivityController extends Controller
         try {
             $validated_data = $request->validate([
                 'name' => 'required|min:2|max:100',
-                'status' => 'required|in:pending,approved,rejected',
+                'assigned_to' => 'required|exists:users,id'
             ]);
 
-            $this->activityService->create_activity(auth()->user(), $validated_data);
+            $validated_data['user_id'] = auth()->user()->id;
+
+            Activities::create($validated_data);
 
             return redirect()->route('activities.index')->with('success', 'Activity created successfully.');
         } catch (ValidationException $e) {
@@ -67,9 +52,8 @@ class ActivityController extends Controller
     public function show($id)
     {
         try {
-            $activity = $this->activityService->get_activity($id);
-            $activity_updates = $this->activityService->get_activity_updates($activity);
-            return view('activities.show', compact('activity', 'activity_updates'));
+            $activity = Activities::with('user', 'assignedTo', 'activityUpdates')->findOrFail($id);
+            return view('activities.show', compact('activity'));
         } catch (ModelNotFoundException $e) {
             return redirect()->route('activities.index')->with('error', 'Activity not found.');
         } catch (\Exception $e) {
@@ -80,7 +64,7 @@ class ActivityController extends Controller
     public function edit($id)
     {
         try {
-            $activity = $this->activityService->get_activity($id);
+            $activity = Activities::findOrFail($id);
             return view('activities.edit', compact('activity'));
         } catch (ModelNotFoundException $e) {
             return redirect()->route('activities.index')->with('error', 'Activity not found.');
@@ -92,7 +76,7 @@ class ActivityController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $activity = $this->activityService->get_activity($id);
+            $activity = Activities::findOrFail($id);
             $activity->name = $request->name;
             $activity->save();
 
@@ -107,7 +91,7 @@ class ActivityController extends Controller
     public function destroy($id)
     {
         try {
-            $activity = $this->activityService->get_activity($id);
+            $activity = Activities::findOrFail($id);
             $activity->delete();
 
             return redirect()->route('activities.index')->with('success', 'Activity deleted successfully.');
@@ -115,21 +99,6 @@ class ActivityController extends Controller
             return redirect()->route('activities.index')->with('error', 'Activity not found.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to delete activity.');
-        }
-    }
-
-    public function updateStatus(Request $request, $id)
-    {
-        try {
-            $activity = $this->activityService->get_activity($id);
-            $this->activityService->update_activity_status($activity, $request->status);
-            $this->activityService->create_activity_update($activity, $request->status, $request->remarks, auth()->user());
-
-            return redirect()->back()->with('success', 'Activity status updated successfully.');
-        } catch (ModelNotFoundException $e) {
-            return redirect()->back()->with('error', 'Activity not found.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Failed to update activity status.');
         }
     }
 }

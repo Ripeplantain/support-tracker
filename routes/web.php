@@ -33,17 +33,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/activities', [ActivityController::class, 'index'])->name('activities.index');
     Route::get('/activities/create', [ActivityController::class, 'create'])->name('activities.create');
     Route::post('/activities', [ActivityController::class, 'store'])->name('activities.store');
-    Route::get('/activities/{activity}', [ActivityController::class, 'show'])->name('activities.show');
-    Route::delete('/activities/{activity}', [ActivityController::class, 'destroy'])->name('activities.destroy');
-    Route::get('/activities/{activity}/edit', [ActivityController::class, 'edit'])->name('activities.edit');
-    Route::patch('/activities/{activity}', [ActivityController::class, 'update'])->name('activities.update');
+    Route::get('/activities/{id}', [ActivityController::class, 'show'])->name('activities.show');
+    Route::delete('/activities/{id}', [ActivityController::class, 'destroy'])->name('activities.destroy');
+    Route::get('/activities/{id}/edit', [ActivityController::class, 'edit'])->name('activities.edit');
+    Route::patch('/activities/{id}', [ActivityController::class, 'update'])->name('activities.update');
     
     // Activity Updates
-    Route::get('/activities/{activity}/updates/create', [ActivityUpdateController::class, 'create'])->name('activity_updates.create');
-    Route::post('/activities/{activity}/updates', [ActivityUpdateController::class, 'store'])->name('activity_updates.store');
-    Route::get('/activities/{activity}/updates/{update}/edit', [ActivityUpdateController::class, 'edit'])->name('activity_updates.edit');
-    Route::patch('/activities/{activity}/updates/{update}', [ActivityUpdateController::class, 'update'])->name('activity_updates.update');
-    Route::delete('/activities/{activity}/updates/{update}', [ActivityUpdateController::class, 'destroy'])->name('activity_updates.destroy');
+    Route::get('/activities/{id}/updates/create', [ActivityUpdateController::class, 'create'])->name('activity_updates.create');
+    Route::post('/activities/{id}/updates', [ActivityUpdateController::class, 'store'])->name('activity_updates.store');
+    Route::get('/activities/{id}/updates/{update}/edit', [ActivityUpdateController::class, 'edit'])->name('activity_updates.edit');
+    Route::patch('/activities/{id}/updates/{update}', [ActivityUpdateController::class, 'update'])->name('activity_updates.update');
+    Route::delete('/activities/{id}/updates/{update}', [ActivityUpdateController::class, 'destroy'])->name('activity_updates.destroy');
 });
 
 require __DIR__.'/auth.php';

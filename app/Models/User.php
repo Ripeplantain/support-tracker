@@ -52,4 +52,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(ActivityUpdates::class);
     }
+
+    public function assignedActivities()
+    {
+        return $this->hasMany(Activities::class, 'assigned_to');
+    }
 }
