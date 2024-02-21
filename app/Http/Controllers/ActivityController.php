@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\ActivityService;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ActivityController extends Controller
 {
@@ -21,7 +22,20 @@ class ActivityController extends Controller
     {
         try {
             $activities = $this->activityService->get_user_activities(auth()->user());
-            return view('activities.index', compact('activities'));
+
+            // paginate activities
+            $perPage = 10;
+            $page = Paginator::resolveCurrentPage('page');
+
+            $activities = new Paginator(
+                $activities->forPage($page, $perPage),
+                $activities->count(),
+                $perPage,
+                [$page],
+                ['path' => Paginator::resolveCurrentPath()]
+            );
+
+            return view('activities.index', ['activities' => $activities]);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to retrieve activities.');
         }
@@ -37,6 +51,7 @@ class ActivityController extends Controller
         try {
             $validated_data = $request->validate([
                 'name' => 'required|min:2|max:100',
+                'status' => 'required|in:pending,approved,rejected',
             ]);
 
             $this->activityService->create_activity(auth()->user(), $validated_data);
