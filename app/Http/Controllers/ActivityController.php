@@ -21,7 +21,7 @@ class ActivityController extends Controller
     {
         try {
             $activities = $this->activityService->get_user_activities(auth()->user());
-            return view('activities.index', compact('activities'));
+            return view('dashboard', compact('activities'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to retrieve activities.');
         }
