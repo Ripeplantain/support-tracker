@@ -52,11 +52,27 @@ class ActivityController extends Controller
         }
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
         try {
             $activity = Activities::with('user', 'assignedTo')->findOrFail($id);
-            $updates = ActivityUpdates::where('activity_id', $id)->orderBy('created_at', 'desc')->get();
+            
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
+    
+            $query = ActivityUpdates::where('activity_id', $id);
+    
+            if ($startDate) {
+                $query->whereDate('created_at', '>=', $startDate);
+            }
+    
+            if ($endDate) {
+                $query->whereDate('created_at', '<=', $endDate);
+            }
+    
+            // Retrieve activity updates based on the applied filters
+            $updates = $query->orderBy('created_at', 'desc')->get();
+    
             return view('activities.show', ['activity' => $activity, 'updates' => $updates]);
         } catch (ModelNotFoundException $e) {
             return redirect()->route('activities.index')->with('error', 'Activity not found.');
@@ -64,6 +80,7 @@ class ActivityController extends Controller
             return redirect()->back()->with('error', 'Failed to retrieve activity details.');
         }
     }
+    
 
     public function edit($id)
     {

@@ -30,6 +30,21 @@
     <div class="mx-auto sm:px-6 lg:px-8 my-4">
         <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
             <div class="p-6 text-gray-900">
+
+                {{-- start of date filter --}}
+                <form
+                    class="flex items-center justify-center gap-3"
+                    method="get" action="{{ route('activities.show', ['id' => $activity->id]) }}">
+                    <label for="start_date">Start Date:</label>
+                    <input type="date" id="start_date" name="start_date">
+            
+                    <label for="end_date">End Date:</label>
+                    <input type="date" id="end_date" name="end_date">
+            
+                    <x-primary-button type="submit">Generate Report</x-primary-button>
+                </form>
+                {{-- end of date filter --}}
+
                 <h2 class="text-lg py-4">Updates History</h2>
                 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                     <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
