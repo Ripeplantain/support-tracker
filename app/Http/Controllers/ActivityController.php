@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Activities;
+use App\Models\ActivityUpdates;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -54,8 +55,9 @@ class ActivityController extends Controller
     public function show($id)
     {
         try {
-            $activity = Activities::with('user', 'assignedTo', 'activityUpdates')->findOrFail($id);
-            return view('activities.show', compact('activity'));
+            $activity = Activities::with('user', 'assignedTo')->findOrFail($id);
+            $updates = ActivityUpdates::where('activity_id', $id)->orderBy('created_at', 'desc')->get();
+            return view('activities.show', ['activity' => $activity, 'updates' => $updates]);
         } catch (ModelNotFoundException $e) {
             return redirect()->route('activities.index')->with('error', 'Activity not found.');
         } catch (\Exception $e) {

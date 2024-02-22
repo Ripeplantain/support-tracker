@@ -1,15 +1,5 @@
 <x-app-layout>
 
-    @if(session('success'))
-        <div
-            x-data="{ show: true }"
-            x-show="show"
-            x-init="setTimeout(() => show = false, 3000)"
-            class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative m-4" role="alert">
-            {{ session('success') }}
-        </div>
-    @endif
-
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -44,7 +34,8 @@
                                             Assigned to
                                         </th>
                                         <th scope="col" class="px-6 py-3">
-                                            <span class="sr-only">Edit</span>
+                                        </th>
+                                        <th scope="col" class="px-6 py-3">
                                         </th>
                                     </tr>
                                 </thead>
@@ -71,6 +62,19 @@
                                             <td class="px-6 py-4">
                                                 {{$activity->assignedTo->name}}
                                             </td>
+                                            @if ($activity->status_changed)
+                                                <td class="px-6 py-4 flex justify-center gap-1">
+                                                    <a 
+                                                        href="{{route('activities.show', ['id' => $activity->id])}}" 
+                                                        class="font-medium text-xs bg-gray-700 text-white px-2 py-1 rounded-full">View Updates</a>
+                                                </td>
+                                            @else
+                                                <td class="px-6 py-4 flex justify-center">
+                                                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-100">
+                                                        no updates
+                                                    </span>
+                                                </td>
+                                            @endif
                                             <td class="px-6 py-4 text-right ">
                                                 <a href="{{route('activities.edit', ['id' => $activity->id])}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
                                                 <a href="{{route('activity_updates.create', ['id' => $activity->id])}}" class="font-medium text-green-600 dark:text-green-500 hover:underline ps-4">Update Status</a>

@@ -55,14 +55,4 @@ class ActivityUpdateController extends Controller
             return redirect()->back()->with('error', 'Failed to create activity update.');
         }
     }
-
-    public function index()
-    {
-        try {
-            $activities = Activities::with('user', 'assignedTo')->orderBy('created_at', 'desc')->paginate(10);
-            return view('activities.index', ['activities' => $activities]);
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Failed to retrieve activities.');
-        }
-    }
 }
